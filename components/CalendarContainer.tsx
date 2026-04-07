@@ -25,7 +25,12 @@ export default function CalendarContainer() {
       const savedNotes = localStorage.getItem("smartcalendar-notes");
       if (savedNotes) setNotes(JSON.parse(savedNotes));
       const savedTheme = localStorage.getItem("smartcalendar-theme");
-      if (savedTheme === "light") setDarkMode(false);
+      if (savedTheme === "light") {
+        setDarkMode(false);
+        document.documentElement.setAttribute("data-dark", "false");
+      } else {
+        document.documentElement.setAttribute("data-dark", "true");
+      }
     } catch { }
   }, []);
 
@@ -60,6 +65,7 @@ export default function CalendarContainer() {
   const toggleDark = () => {
     const next = !darkMode;
     setDarkMode(next);
+    document.documentElement.setAttribute("data-dark", next ? "true" : "false");
     localStorage.setItem("smartcalendar-theme", next ? "dark" : "light");
   };
 
@@ -88,11 +94,17 @@ export default function CalendarContainer() {
   return (
     <div style={{ maxWidth: "1100px", margin: "0 auto" }} className="fade-up">
       <header style={{
-        marginBottom: "2rem", padding: "14px 20px",
-        background: "var(--card)", borderRadius: "var(--radius)",
-        border: "1px solid var(--border)", display: "flex",
-        alignItems: "center", justifyContent: "space-between",
-        flexWrap: "wrap", gap: "12px", boxShadow: "var(--shadow)",
+        marginBottom: "2rem",
+        padding: "14px 20px",
+        background: "var(--card)",
+        borderRadius: "var(--radius)",
+        border: "1px solid var(--border)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: "12px",
+        boxShadow: "var(--shadow)",
         transition: "background 0.3s, border-color 0.3s",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
@@ -104,7 +116,7 @@ export default function CalendarContainer() {
             </div>
           ) : (
             <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: theme.gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>
-              📅
+              ��
             </div>
           )}
           <div>
@@ -120,21 +132,47 @@ export default function CalendarContainer() {
                 <span className="cursor" />
               </p>
             ) : (
-              <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>Plan your days · capture your thoughts</p>
+              <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                Plan your days · capture your thoughts
+              </p>
             )}
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <div style={{ fontFamily: darkMode ? "var(--mono)" : "inherit", fontSize: "0.7rem", fontWeight: "600", color: theme.primary, background: theme.highlight, border: "1px solid " + theme.border, borderRadius: darkMode ? "6px" : "20px", padding: "4px 12px" }}>
+          <div style={{
+            fontFamily: darkMode ? "var(--mono)" : "inherit",
+            fontSize: "0.7rem", fontWeight: "600",
+            color: theme.primary,
+            background: theme.highlight,
+            border: "1px solid " + theme.border,
+            borderRadius: darkMode ? "6px" : "20px",
+            padding: "4px 12px",
+          }}>
             {darkMode ? theme.tag : theme.name + " " + currentDate.getFullYear()}
           </div>
-          <button onClick={toggleDark} style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "50px", padding: "6px 14px", cursor: "pointer", fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "5px", transition: "all 0.2s", fontFamily: "inherit", fontWeight: "500" }}
+          <button
+            onClick={toggleDark}
+            style={{
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+              borderRadius: "50px",
+              padding: "6px 14px",
+              cursor: "pointer",
+              fontSize: "0.75rem",
+              color: "var(--text-muted)",
+              display: "flex", alignItems: "center", gap: "5px",
+              transition: "all 0.2s",
+              fontFamily: "inherit",
+              fontWeight: "500",
+            }}
             onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--accent)")}
-            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}>
-            {darkMode ? "Light" : "Dark"}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+          >
+            {darkMode ? "☀️ Light" : "🌙 Dark"}
           </button>
         </div>
       </header>
+
       <div className="calendar-grid">
         <HeroSection currentDate={currentDate} theme={theme} darkMode={darkMode} />
         <Calendar currentDate={currentDate} setCurrentDate={setCurrentDate} range={range} setRange={setRange} theme={theme} darkMode={darkMode} />
