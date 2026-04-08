@@ -70,7 +70,7 @@ export default function NotesPanel({ rangeNoteKey, monthKey, notes, saveNote, ra
         )}
       </div>
 
-      <div style={{ display: "flex", gap: "4px", background: "var(--bg)", borderRadius: "8px", padding: "3px", border: "1px solid var(--border)" }}>
+      <div style={{ display: "flex", gap: "4px", background: "var(--highlight)", borderRadius: "8px", padding: "3px", border: "1px solid var(--border)" }}>
         <NoteTab active={activeTab === "range"} onClick={() => setActiveTab("range")} label="date_range" theme={theme} />
         <NoteTab active={activeTab === "month"} onClick={() => setActiveTab("month")} label="this_month" theme={theme} />
       </div>
@@ -82,8 +82,8 @@ export default function NotesPanel({ rangeNoteKey, monthKey, notes, saveNote, ra
               <span style={{ color: "var(--text-muted)" }}>range: </span>{rangeLabel}
             </div>
           ) : (
-            <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", color: "var(--text-muted)", background: "var(--bg)", padding: "8px 12px", borderRadius: "6px", border: "1px solid var(--border)" }}>
-              <span style={{ color: "#e06c75" }}>// </span>select a date first
+            <div style={{ fontFamily: "var(--mono)", fontSize: "0.7rem", color: "var(--text-muted)", background: "var(--highlight)", padding: "8px 12px", borderRadius: "6px", border: "1px solid var(--border)" }}>
+              <span style={{ color: theme.primary }}>// </span>select a date first
             </div>
           )}
           <textarea value={rangeText} onChange={(e) => handleRangeChange(e.target.value)} placeholder="// write your note here..." disabled={!rangeNoteKey} style={textareaCSS(!rangeNoteKey, theme)} />
@@ -98,10 +98,12 @@ export default function NotesPanel({ rangeNoteKey, monthKey, notes, saveNote, ra
 
       {savedEntries.length > 0 && (
         <div style={{ borderTop: "1px solid var(--border)", paddingTop: "14px" }}>
-          <div style={{ fontFamily: "var(--mono)", fontSize: "0.6rem", color: "var(--text-muted)", marginBottom: "10px" }}>{"/* saved_notes[" + savedEntries.length + "] */"}</div>
+          <div style={{ fontFamily: "var(--mono)", fontSize: "0.6rem", color: "var(--text-muted)", marginBottom: "10px" }}>
+            {"/* saved_notes[" + savedEntries.length + "] */"}
+          </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "7px", maxHeight: "200px", overflowY: "auto" }}>
             {savedEntries.map(([key, val]) => (
-              <div key={key} style={{ background: "var(--bg)", borderRadius: "6px", padding: "9px 12px", borderLeft: "3px solid " + theme.primary }}>
+              <div key={key} style={{ background: "var(--highlight)", borderRadius: "6px", padding: "9px 12px", borderLeft: "3px solid " + theme.primary }}>
                 <div style={{ fontFamily: "var(--mono)", color: theme.primary, fontWeight: "600", marginBottom: "5px", fontSize: "0.62rem" }}>{labelKey(key)}</div>
                 <div style={{ color: "var(--text-primary)", lineHeight: "1.55", fontSize: "0.78rem" }}>{val.length > 100 ? val.slice(0, 100) + "..." : val}</div>
               </div>
