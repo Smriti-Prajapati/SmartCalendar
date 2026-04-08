@@ -171,7 +171,7 @@ export default function CalendarContainer() {
       <div className="calendar-grid">
         <HeroSection currentDate={currentDate} theme={theme} darkMode={darkMode} />
         <Calendar currentDate={currentDate} setCurrentDate={setCurrentDate} range={range} setRange={setRange} theme={theme} darkMode={darkMode} />
-        <NotesPanel rangeNoteKey={rangeNoteKey} monthKey={monthKey} notes={notes} saveNote={saveNote} range={range} theme={theme} darkMode={darkMode} />
+        <NotesPanel rangeNoteKey={rangeNoteKey} monthKey={monthKey} notes={notes} saveNote={saveNote} range={range} theme={theme} darkMode={darkMode} currentDate={currentDate} />
       </div>
     </div>
   );

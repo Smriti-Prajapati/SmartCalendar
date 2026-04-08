@@ -12,9 +12,10 @@ type Props = {
   range: SelectedRange;
   theme: MonthTheme;
   darkMode: boolean;
+  currentDate: Date;
 };
 
-export default function NotesPanel({ rangeNoteKey, monthKey, notes, saveNote, range, theme }: Props) {
+export default function NotesPanel({ rangeNoteKey, monthKey, notes, saveNote, range, theme, currentDate }: Props) {
   const [activeTab, setActiveTab] = useState<"range" | "month">("range");
   const [rangeText, setRangeText] = useState("");
   const [monthText, setMonthText] = useState("");
@@ -50,7 +51,28 @@ export default function NotesPanel({ rangeNoteKey, monthKey, notes, saveNote, ra
     ? range.end ? shortDate(range.start) + " -> " + shortDate(range.end) : shortDate(range.start)
     : null;
 
-  const savedEntries = Object.entries(notes).filter(([, v]) => v.trim());
+  // Only show notes relevant to the current month
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const currentMonthKey = year + "-" + month;
+
+  const relevantEntries = Object.entries(notes).filter(([key, val]) => {
+    if (!val.trim()) return false;
+    // month note for this month
+    if (key === currentMonthKey) return true;
+    // range note — check if start date falls in this month
+    if (key.startsWith("range-")) {
+      const inner = key.slice(6);
+      const match = inner.match(/^(\d{4}-\d{2}-\d{2})/);
+      if (match) {
+        const parts = match[1].split("-");
+        const noteYear = parseInt(parts[0]);
+        const noteMonth = parseInt(parts[1]) - 1;
+        return noteYear === year && noteMonth === month;
+      }
+    }
+    return false;
+  });
 
   return (
     <div className="glass-card" style={{ borderRadius: "var(--radius)", padding: "22px", display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -86,23 +108,23 @@ export default function NotesPanel({ rangeNoteKey, monthKey, notes, saveNote, ra
               <span style={{ color: theme.primary }}>// </span>select a date first
             </div>
           )}
-          <textarea value={rangeText} onChange={(e) => handleRangeChange(e.target.value)} placeholder="// write your note here..." disabled={!rangeNoteKey} style={textareaCSS(!rangeNoteKey, theme)} />
+          <textarea value={rangeText} onChange={(e) => handleRangeChange(e.target.value)} placeholder="// write your note here..." disabled={!rangeNoteKey} style={taStyle(!rangeNoteKey, theme)} />
           {rangeText && <div style={{ fontFamily: "var(--mono)", fontSize: "0.62rem", color: "var(--text-muted)", textAlign: "right" }}>{rangeText.length} chars</div>}
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          <textarea value={monthText} onChange={(e) => handleMonthChange(e.target.value)} placeholder="// monthly notes..." style={textareaCSS(false, theme)} />
+          <textarea value={monthText} onChange={(e) => handleMonthChange(e.target.value)} placeholder={"// notes for " + theme.name + " " + year + "..."} style={taStyle(false, theme)} />
           {monthText && <div style={{ fontFamily: "var(--mono)", fontSize: "0.62rem", color: "var(--text-muted)", textAlign: "right" }}>{monthText.length} chars</div>}
         </div>
       )}
 
-      {savedEntries.length > 0 && (
+      {relevantEntries.length > 0 && (
         <div style={{ borderTop: "1px solid var(--border)", paddingTop: "14px" }}>
           <div style={{ fontFamily: "var(--mono)", fontSize: "0.6rem", color: "var(--text-muted)", marginBottom: "10px" }}>
-            {"/* saved_notes[" + savedEntries.length + "] */"}
+            {"/* " + theme.name + " " + year + " notes[" + relevantEntries.length + "] */"}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "7px", maxHeight: "200px", overflowY: "auto" }}>
-            {savedEntries.map(([key, val]) => (
+            {relevantEntries.map(([key, val]) => (
               <div key={key} style={{ background: "var(--highlight)", borderRadius: "6px", padding: "9px 12px", borderLeft: "3px solid " + theme.primary }}>
                 <div style={{ fontFamily: "var(--mono)", color: theme.primary, fontWeight: "600", marginBottom: "5px", fontSize: "0.62rem" }}>{labelKey(key)}</div>
                 <div style={{ color: "var(--text-primary)", lineHeight: "1.55", fontSize: "0.78rem" }}>{val.length > 100 ? val.slice(0, 100) + "..." : val}</div>
@@ -123,7 +145,7 @@ function NoteTab({ active, onClick, label, theme }: { active: boolean; onClick: 
   );
 }
 
-function textareaCSS(disabled: boolean, theme: MonthTheme): React.CSSProperties {
+function taStyle(disabled: boolean, theme: MonthTheme): React.CSSProperties {
   return { width: "100%", minHeight: "140px", padding: "12px", fontSize: "0.82rem", lineHeight: "1.7", border: "1px solid " + (disabled ? "var(--border)" : theme.primary + "40"), borderRadius: "8px", background: "var(--bg)", color: "var(--text-primary)", resize: "vertical", outline: "none", fontFamily: "var(--mono)", opacity: disabled ? 0.4 : 1, cursor: disabled ? "not-allowed" : "text", transition: "border-color 0.2s, box-shadow 0.2s" };
 }
 
