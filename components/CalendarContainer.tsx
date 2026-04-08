@@ -51,14 +51,14 @@ export default function CalendarContainer() {
       root.style.setProperty("--range-bg", t.rangeBg);
       root.style.setProperty("--shadow", "0 2px 20px rgba(0,0,0,0.4)");
     } else {
-      root.style.setProperty("--bg", t.bg);
+      root.style.setProperty("--bg", "#f8f9fa");
       root.style.setProperty("--card", "#ffffff");
-      root.style.setProperty("--text-primary", t.text);
-      root.style.setProperty("--text-muted", t.muted);
-      root.style.setProperty("--border", t.border);
-      root.style.setProperty("--highlight", t.highlight);
+      root.style.setProperty("--text-primary", "#111827");
+      root.style.setProperty("--text-muted", "#6b7280");
+      root.style.setProperty("--border", "#e5e7eb");
+      root.style.setProperty("--highlight", "#f3f4f6");
       root.style.setProperty("--range-bg", t.rangeBg);
-      root.style.setProperty("--shadow", "0 2px 20px rgba(0,0,0,0.07)");
+      root.style.setProperty("--shadow", "0 1px 12px rgba(0,0,0,0.08)");
     }
   }, [currentDate, darkMode]);
 
@@ -108,17 +108,12 @@ export default function CalendarContainer() {
         transition: "background 0.3s, border-color 0.3s",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-          {darkMode ? (
-            <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-              <div style={{ width: "11px", height: "11px", borderRadius: "50%", background: "#ff5f57" }} />
-              <div style={{ width: "11px", height: "11px", borderRadius: "50%", background: "#febc2e" }} />
-              <div style={{ width: "11px", height: "11px", borderRadius: "50%", background: "#28c840" }} />
-            </div>
-          ) : (
-            <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: theme.gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem", flexShrink: 0 }}>
-              ��
-            </div>
-          )}
+          <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+            <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: "#ff5f57", flexShrink: 0 }} />
+            <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: "#febc2e", flexShrink: 0 }} />
+            <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: "#28c840", flexShrink: 0 }} />
+          </div>
+          <div style={{ width: "1px", height: "24px", background: "var(--border)" }} />
           <div>
             <h1 className="gradient-text" style={{ fontSize: "1.4rem", fontWeight: "800", letterSpacing: "-0.03em", lineHeight: 1 }}>
               TimeEngine
@@ -133,7 +128,7 @@ export default function CalendarContainer() {
               </p>
             ) : (
               <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
-                Plan your days · capture your thoughts
+                Plan your days - capture your thoughts
               </p>
             )}
           </div>
@@ -168,7 +163,7 @@ export default function CalendarContainer() {
             onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--accent)")}
             onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
           >
-            {darkMode ? "☀️ Light" : "🌙 Dark"}
+            {darkMode ? "Light" : "Dark"}
           </button>
         </div>
       </header>
